@@ -214,7 +214,6 @@ unsigned int parsing_buffer_coin_acceptor(unsigned int *rx_cashduino, double *am
 unsigned int parsing_buffer_bill_acceptor(unsigned int *rx_cashduino, double *amount){
 
   unsigned int ret_code = NONE;
-  
   /* type of command */
   switch(rx_cashduino[0]){
     case 0xE1: 
