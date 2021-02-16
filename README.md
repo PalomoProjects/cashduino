@@ -1,2 +1,71 @@
 # cashduino
 Code integration to use CashDuino board features.
+
+Commands and guidelines:
+
+#### ENQUIRY BOARD ####
+--> MASTER TO SLAVE:
+CMD DAT1 DAT2 DAT3 DAT4 DAT5 DAT6 DAT7 DAT8 KEY1 KEY2 KEY3 KEY4 KEY5 <- 14 bytes
+C1 	00   00   00   00   00   00   00   00   33   CC   33   CC	33	 	 
+
+<--- MASTER READ FROM SLAVE:
+CMD SUB  EVT  DAT3 DAT4 DAT5 DAT6 DAT7 DAT8 DAT9 DAT10 KEY1 KEY2 KEY3 KEY4 KEY5 <- 16 Bytes
+D1	00	 00	  00   00	00   00   00   00   00   00	   33   CC   33   CC   33
+
+
+#### COIN ENABLE TASK ####
+--> MASTER TO SLAVE:
+DAT1:
+DAT2:
+DAT3:
+DAT4:
+CMD DAT1 DAT2 DAT3 DAT4 DAT5 DAT6 DAT7 DAT8 KEY1 KEY2 KEY3 KEY4 KEY5 <- 14 bytes
+A1 	00   00   00   00   00   00   00   00   33   CC   33   CC	33	 
+
+<--- MASTER READ FROM SLAVE:
+CMD SUB  EVT  DAT1 DAT2 DAT3 DAT4 DAT5 DAT6 DAT7 DAT8  KEY1 KEY2 KEY3 KEY4 KEY5 <- 16 Bytes
+F1	00	 00	  00   00	00   00   00   00   00   00	   33   CC   33   CC   33
+
+#### COIN AUDIT TASK ####
+--> MASTER TO SLAVE:
+CMD DAT1 DAT2 DAT3 DAT4 DAT5 DAT6 DAT7 DAT8 KEY1 KEY2 KEY3 KEY4 KEY5 <- 14 bytes
+A2 	00   00   00   00   00   00   00   00   33   CC   33   CC	33	
+
+DAT1 = Knows tube Channel 1
+DAT2 = Knows tube Channel 2
+DAT3 = Knows tube Channel 3
+DAT4 = Knows tube Channel 4
+DAT5 = Knows tube Channel 5
+DAT6 = Knows tube Channel 6
+DAT7 = Knows tube Channel 7
+DAT8 = CHANNEL 3
+<--- MASTER READ FROM SLAVE
+CMD SUB  EVT  DAT1 DAT2 DAT3 DAT4 DAT5 DAT6 DAT7 DAT8 KEY1 KEY2 KEY3 KEY4 KEY5 <- 16 Bytes
+F2	00	 00	  00   00	00   00   00   00   00   00	  33   CC   33   CC   33
+
+#### COIN OUT TASK ####
+--> MASTER TO SLAVE:
+DAT1 = VALUE
+DAT2 = CHANNEL 1
+DAT3 = VALUE
+DAT4 = CHANNEL 2
+DAT5 = VALUE
+DAT6 = CHANNEL 3
+DAT7 = VALUE
+DAT8 = CHANNEL 4
+DAT9 = VALUE
+DAT10 = CHANNEL 5 * Implement the algorith
+CMD DAT1 DAT2 DAT3 DAT4 DAT5 DAT6 DAT7 DAT8 KEY1 KEY2 KEY3 KEY4 KEY5 <- 14 bytes
+A3 	03   01   00   00   00   00   00   00   33   CC   33   CC	33	
+
+<--- MASTER READ FROM SLAVE (Replay when the dispenser is done)
+CMD SUB  EVT  DAT1 DAT2 DAT3 DAT4 DAT5 DAT6 DAT7 DAT8  KEY1 KEY2 KEY3 KEY4 KEY5 <- 16 Bytes
+F3	00	 00	  00   00	00   00   00   00   00   00	   33   CC   33   CC   33
+
+#### COIN READ EVENT ####
+TUBE | CASHBOX | OUT | REJECT BUTTON |
+
+CMD SUB  EVT  DAT1 DAT2 DAT3 DAT4 DAT5 DAT6 DAT7 DAT8  KEY1 KEY2 KEY3 KEY4 KEY5 <- 16 Bytes
+F4	40   00	  00   00	00   00   00   00   00   00	   33   CC   33   CC   33	<- Cashbox channel 0
+F4	50   00	  00   00	00   00   00   00   00   00	   33   CC   33   CC   33	<- Tube channel 0
+F4	01   00	  00   00	00   00   00   00   00   00	   33   CC   33   CC   33	<- Push reject
