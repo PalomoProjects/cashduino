@@ -99,7 +99,7 @@ void loop() {
 
 }
 
-
+/* function to validate the data structure */
 bool is_a_valid_package(unsigned int *rx_cashduino){
   if( (rx_cashduino[11] == KEY_1) && (rx_cashduino[12] == KEY_2) && 
       (rx_cashduino[13] == KEY_1) && (rx_cashduino[14] == KEY_2) && 
@@ -109,6 +109,7 @@ bool is_a_valid_package(unsigned int *rx_cashduino){
   return false;      
 }
 
+/* function to know if the board is working */
 void parsing_buffer_cashduino(unsigned int *rx_cashduino){
   /* type of command */
   switch(rx_cashduino[0]){
@@ -118,6 +119,7 @@ void parsing_buffer_cashduino(unsigned int *rx_cashduino){
   }
 }
 
+/* function to parsing the cashduino buffer and get information */
 unsigned int parsing_buffer_coin_acceptor(unsigned int *rx_cashduino, double *amount,
                                             unsigned int *channel0, unsigned int *channel1, 
                                             unsigned int *channel2, unsigned int *channel3, 
@@ -211,6 +213,7 @@ unsigned int parsing_buffer_coin_acceptor(unsigned int *rx_cashduino, double *am
   return ret_code;
 }
 
+/* function to parsing the cashduino buffer and get information */
 unsigned int parsing_buffer_bill_acceptor(unsigned int *rx_cashduino, double *amount){
 
   unsigned int ret_code = NONE;
@@ -304,6 +307,7 @@ unsigned int parsing_buffer_bill_acceptor(unsigned int *rx_cashduino, double *am
   return ret_code;
 }
 
+/* function to pull the buffer from the cashduino */
 bool looking_for_new_event(unsigned int *rx_cashduino){
   unsigned int i = 0;
   if( (command != rx_cashduino[0]) || ( new_event != rx_cashduino[2] ) ){
@@ -327,7 +331,7 @@ void read_buffer_from_cashduino(unsigned int *rx_cashduino){
   }
 }
 
-
+/* function to push data over TWI */
 void send_task_to_cashduino(const char *message, unsigned int *cmd){
   Serial.print(message);                      //Debug
   unsigned int i = 0;
@@ -340,7 +344,7 @@ void send_task_to_cashduino(const char *message, unsigned int *cmd){
   Serial.print("\n" );                        //Debug
 }
 
-
+/* function to sends task */
 unsigned int read_buffer_from_serial(void){
   unsigned int serial_option  = 0;
   if (Serial.available() > 0)
