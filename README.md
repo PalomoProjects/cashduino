@@ -23,8 +23,8 @@ Events
 TASK: ENQUIRY BOARD
 -----------
 
-**MASTER TO SLAVE**
-master to slave
+MASTER TO SLAVE
+
 |CMD|DAT1|DAT2|DAT3|DAT4|DAT5|DAT6|DAT7|DAT8|KEY1|KEY2|KEY3|KEY4|KEY5|
 |---|----|----|----|----|----|----|----|----|----|----|----|----|----|
 |C1 |00  |00  |00  |00  |00  |00  |00  |00  |33  |CC  |33  |CC  |33	 |
