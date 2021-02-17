@@ -15,15 +15,15 @@
 #define CASHDUINO_BILL_EVENT  0xE5
 
 
-unsigned int new_event      = 0xFF;
-unsigned int command        = 0x00;
+uint8_t new_event  = 0xFF;
+uint8_t command    = 0x00;
 
-double          amount     = 0;
-unsigned int    cent       = 0;
-unsigned int    un_peso    = 0;
-unsigned int    dos_peso   = 0;
-unsigned int    cinco_peso = 0;
-unsigned int    diez_peso  = 0;
+double  amount     = 0;
+uint8_t cent       = 0;
+uint8_t un_peso    = 0;
+uint8_t dos_peso   = 0;
+uint8_t cinco_peso = 0;
+uint8_t diez_peso  = 0;
 
 /*unsigned int CMD_BILL_AUDIT[]           = {0xB3, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33};*/
 /*unsigned int CMD_BILL_OUT[]             = {0xB4, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33};*/
@@ -36,16 +36,16 @@ void setup() {
 }
 
 void loop() {
- unsigned int MATRIX_CMD [][14] = {{0xC1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                                   {0xA1, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                                   {0xA1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                                   {0xA2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                                   {0xA3, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                                   {0xB1, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                                   {0xB1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                                   {0xB2, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                                   {0xB2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33}
-                                  };
+ uint8_t MATRIX_CMD [][14] = {{0xC1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
+                             {0xA1, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
+                             {0xA1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
+                             {0xA2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
+                             {0xA3, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
+                             {0xB1, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
+                             {0xB1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
+                             {0xB2, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
+                             {0xB2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33}
+                            };
  /* type in the send box section the selecction that you wants */
  char MATRIX_MESSAGE[][38] = {"ARDUINO SEND ENQUIRY BOARD > ",        /* option 1 */
                               "ARDUINO SEND COIN ENABLE TASK > ",     /* option 2 */
@@ -57,10 +57,10 @@ void loop() {
                               "ARDUINO SEND BILL TO STACKER TASK > ", /* option 8 */
                               "ARDUINO SEND BILL REJECT TASK >"       /* option 9 */                     
                              };
-  unsigned int rx_cashduino[MAX_BUFF_CASHDUINO] = {0};
-  unsigned int pc_option      = NONE;
-  unsigned int coin_cmd       = NONE;
-  unsigned int bill_cmd       = NONE;
+  uint8_t rx_cashduino[MAX_BUFF_CASHDUINO] = {0};
+  uint8_t pc_option      = NONE;
+  uint8_t bill_cmd       = NONE;
+  uint8_t coin_cmd       = NONE;
   
   /* lisent the serial port and sends task */
   if ( ( pc_option = read_buffer_from_serial() ) != NONE ){
@@ -100,7 +100,7 @@ void loop() {
 }
 
 /* function to validate the data structure */
-bool is_a_valid_package(unsigned int *rx_cashduino){
+bool is_a_valid_package(uint8_t *rx_cashduino){
   if( (rx_cashduino[11] == KEY_1) && (rx_cashduino[12] == KEY_2) && 
       (rx_cashduino[13] == KEY_1) && (rx_cashduino[14] == KEY_2) && 
       (rx_cashduino[15] == KEY_1) ){
@@ -110,7 +110,7 @@ bool is_a_valid_package(unsigned int *rx_cashduino){
 }
 
 /* function to know if the board is working */
-void parsing_buffer_cashduino(unsigned int *rx_cashduino){
+void parsing_buffer_cashduino(uint8_t *rx_cashduino){
   /* type of command */
   switch(rx_cashduino[0]){
     case 0xD1: 
@@ -120,12 +120,12 @@ void parsing_buffer_cashduino(unsigned int *rx_cashduino){
 }
 
 /* function to parsing the cashduino buffer and get information */
-unsigned int parsing_buffer_coin_acceptor(unsigned int *rx_cashduino, double *amount,
-                                            unsigned int *channel0, unsigned int *channel1, 
-                                            unsigned int *channel2, unsigned int *channel3, 
-                                            unsigned int *channel4){
+uint8_t parsing_buffer_coin_acceptor(uint8_t *rx_cashduino, double *amount,
+                                            uint8_t *channel0, uint8_t *channel1, 
+                                            uint8_t *channel2, uint8_t *channel3, 
+                                            uint8_t *channel4){
 
-  unsigned int ret_code = NONE;
+  uint8_t ret_code = NONE;
   /* type of command */
   switch(rx_cashduino[0]){
     case 0xF1: 
@@ -214,9 +214,9 @@ unsigned int parsing_buffer_coin_acceptor(unsigned int *rx_cashduino, double *am
 }
 
 /* function to parsing the cashduino buffer and get information */
-unsigned int parsing_buffer_bill_acceptor(unsigned int *rx_cashduino, double *amount){
+uint8_t parsing_buffer_bill_acceptor(uint8_t *rx_cashduino, double *amount){
 
-  unsigned int ret_code = NONE;
+  uint8_t ret_code = NONE;
   /* type of command */
   switch(rx_cashduino[0]){
     case 0xE1: 
@@ -308,8 +308,8 @@ unsigned int parsing_buffer_bill_acceptor(unsigned int *rx_cashduino, double *am
 }
 
 /* function to pull the buffer from the cashduino */
-bool looking_for_new_event(unsigned int *rx_cashduino){
-  unsigned int i = 0;
+bool looking_for_new_event(uint8_t *rx_cashduino){
+  uint8_t i = 0;
   if( (command != rx_cashduino[0]) || ( new_event != rx_cashduino[2] ) ){
       command = rx_cashduino[0];
       new_event = rx_cashduino[2];
@@ -323,7 +323,7 @@ bool looking_for_new_event(unsigned int *rx_cashduino){
   return false;
 }
 
-void read_buffer_from_cashduino(unsigned int *rx_cashduino){
+void read_buffer_from_cashduino(uint8_t *rx_cashduino){
   Wire.requestFrom(CASH_DUINO_ADDR, MAX_BUFF_CASHDUINO);    // request 6 bytes from slave CashDuino
   while (Wire.available()) {                                // slave may send less than requested
     *(rx_cashduino++) = Wire.read();                        // receive a byte as character
@@ -332,9 +332,9 @@ void read_buffer_from_cashduino(unsigned int *rx_cashduino){
 }
 
 /* function to push data over TWI */
-void send_task_to_cashduino(const char *message, unsigned int *cmd){
+void send_task_to_cashduino(const char *message, uint8_t *cmd){
   Serial.print(message);                      //Debug
-  unsigned int i = 0;
+  uint8_t i = 0;
   Wire.beginTransmission(CASH_DUINO_ADDR);    // transmit to CashDuino
   for(i = 0; i<MAX_BUFF_ARDUINO; i++){
     Wire.write(cmd[i]);                       // sends one byte
@@ -345,8 +345,8 @@ void send_task_to_cashduino(const char *message, unsigned int *cmd){
 }
 
 /* function to sends task */
-unsigned int read_buffer_from_serial(void){
-  unsigned int serial_option  = 0;
+uint8_t read_buffer_from_serial(void){
+  uint8_t serial_option  = 0;
   if (Serial.available() > 0)
   {
     serial_option = Serial.read();
