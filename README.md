@@ -90,7 +90,8 @@ MASTER READ FROM SLAVE
 
 **COIN READ EVENT**
 
-|CMD|SUB |EVT |DAT1|DAT2|DAT3|DAT4|DAT5|DAT6|DAT7|DAT8|KEY1|KEY2|KEY3|KEY4|KEY5|Event| |---|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|-----|
+|CMD|SUB |EVT |DAT1|DAT2|DAT3|DAT4|DAT5|DAT6|DAT7|DAT8|KEY1|KEY2|KEY3|KEY4|KEY5|Event|
+|---|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|-----|
 |F4 |40  |00  |00  |00  |00  |00  |00  |00  |00  |00  |33  |CC  |33  |CC  |33  |CASHBOX|
 |F4 |50  |00  |00  |00  |00  |00  |00  |00  |00  |00  |33  |CC  |33  |CC  |33  |TUBE|
 |F4 |01  |00  |00  |00  |00  |00  |00  |00  |00  |00  |33  |CC  |33  |CC  |33  |REJECT BUTTON|
