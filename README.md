@@ -1,7 +1,13 @@
 # cashduino
 
-Hardware compatible: Arduino R3
-I2C address 0x08
+	* Hardware compatible: Arduino R3.
+	* I2C address 0x08.
+	* Tasks: request from Master(Arduino) to slave(CashDuino).
+	* Event: event reported from slave.
+	* CMD: command.
+	* SUB: Sub command.
+	* EVT: Event counter.
+	* DAT: Data
 
 ### Tasks
 	* COIN ENABLE
