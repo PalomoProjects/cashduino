@@ -61,7 +61,6 @@ MASTER READ FROM SLAVE
 |---|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|
 |F2 |00  |00  |00  |00  |00  |00  |00  |00  |00  |00  |33   |CC  |33 |CC  |33  |
 
-Data description:
 	* DAT1 = Knows tube Channel 1
 	* DAT2 = Knows tube Channel 2
 	* DAT3 = Knows tube Channel 3
@@ -79,7 +78,6 @@ MASTER TO SLAVE
 |---|----|----|----|----|----|----|----|----|----|----|----|----|----|
 |A2 |00  |00  |00  |00  |00  |00  |00  |00  |33  |CC  |33  |CC  |33	 |
 
-Data description:
 	* DAT1 = VALUE
 	* DAT2 = CHANNEL 1
 	* DAT3 = VALUE
