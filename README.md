@@ -1,5 +1,8 @@
 # cashduino
 
+	* MDB bill validator: ICT TAO, CASH CODE, MEI BILL ACCEPTOR, ICT RECYCLER 
+	* MDB coin changers: MEI-CF7000
+	* MDB cashless: NAYAX
 	* Hardware compatible: Arduino R3.
 	* I2C address 0x08.
 	* Tasks: request from Master(Arduino) to slave(CashDuino).
