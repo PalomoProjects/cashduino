@@ -1,5 +1,5 @@
 /*
- * Description: Integration code to use cashduino shiled 
+ * Description: Integration code to use cashduino shield
  * Author: Jesus Palomo (jgualberto.palomo@gmail.com)
  * Copyrigth: 2021 palomothings 
  * 
