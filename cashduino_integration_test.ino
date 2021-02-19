@@ -1,3 +1,21 @@
+/*
+ * Description: Integration code to use cashduino shiled 
+ * Author: Jesus Palomo (jgualberto.palomo@gmail.com)
+ * Copyrigth: 2021 palomothings 
+ * 
+ * This file is part of palomothings site
+ * 
+ * CashDuino integration is a free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License GPLV2 as published by 
+ * the Free Software Fundation.
+ * 
+ * CashDuino Integracion is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without event the implied warranty of
+ * MERCHANTABILITY of FITNEDD FOR A PARTICULAR PURPOSE. See the 
+ * GNU General Public License for more details. http://www.gnu.org/license/
+ *  
+ */
+
 #include <Wire.h>
 #include <avr/pgmspace.h>
 
