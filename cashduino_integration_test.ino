@@ -39,7 +39,9 @@
                                                         "ARDUINO SEND BILL ENABLE TASK > ",     /* option 6 */
                                                         "ARDUINO SEND BILL DISABLE TASK > ",    /* option 7 */
                                                         "ARDUINO SEND BILL TO STACKER TASK > ", /* option 8 */
-                                                        "ARDUINO SEND BILL REJECT TASK > "      /* option 9 */
+                                                        "ARDUINO SEND BILL REJECT TASK > ",     /* option 9 */
+                                                        "ARDUINO SEND BILL AUDIT > ",           /* option : */
+                                                        "ARDUINO SEND BILL OUT > "              /* option ; */
                                                        };
 
 /* options to the user, the user need to type in the Serial Monitor 1 to 9 */
@@ -53,6 +55,8 @@ typedef enum{
   SEND_BILL_DISABLE,
   SEND_BILL_TO_STACKER,
   SEND_BILL_REJECT,
+  SEND_BILL_AUDIT,
+  SEND_BILL_OUT,
   INVALID_OPTION
 }pc_options;
 
@@ -63,7 +67,9 @@ typedef enum{
   ARDUINO_CMD_COIN_AUDIT    = 0xA2,
   ARDUINO_CMD_COIN_OUT      = 0xA3,
   ARDUINO_CMD_BILL_ENABLE   = 0xB1,
-  ARDUINO_CMD_BILL_ESCROW   = 0xB2
+  ARDUINO_CMD_BILL_ESCROW   = 0xB2,
+  ARDUINO_CMD_BILL_AUDIT    = 0xB3,
+  ARDUINO_CMD_BILL_OUT      = 0xB4,
 }cmd_arduino;
 
 /* cashduino cmd answers */
@@ -72,9 +78,11 @@ typedef enum{
   CASHDUINO_CMD_COIN_ENABLE = 0xF1,
   CASHDUINO_CMD_COIN_AUDIT  = 0xF2,
   CASHDUINO_CMD_COIN_OUT    = 0xF3,
+  CASHDUINO_CMD_COIN_EVENT  = 0xF4,
   CASHDUINO_CMD_BILL_ENABLE = 0xE1,
   CASHDUINO_CMD_BILL_ESCROW = 0xE2,
-  CASHDUINO_CMD_COIN_EVENT  = 0xF4,
+  CASHDUINO_CMD_BILL_AUDIT  = 0xE3,
+  CASHDUINO_CMD_BILL_OUT    = 0xE4,
   CASHDUINO_CMD_BILL_EVENT  = 0xE5,
 }cmd_cashduino;
 
@@ -389,40 +397,49 @@ void send_task_to_cashduino(uint8_t selection){
       ARDUINO_TASK[0] = ARDUINO_CMD_COIN_ENABLE;
       ARDUINO_TASK[2] = 0xFF;
       ARDUINO_TASK[4] = 0xFF;
-    break;
+      break;
     case COIN_DISABLE:
       ARDUINO_TASK[0] = ARDUINO_CMD_COIN_ENABLE;
-    break;
+      break;
     case SEND_COIN_AUDIT:
       ARDUINO_TASK[0] = ARDUINO_CMD_COIN_AUDIT;
-    break;
+      break;
     case SEND_COIN_OUT:
       ARDUINO_TASK[0] = ARDUINO_CMD_COIN_OUT;
       ARDUINO_TASK[1] = 0x01;
       ARDUINO_TASK[2] = 0x02;
-    break;
+      break;
     case SEND_BILL_ENABLE:
       ARDUINO_TASK[0] = ARDUINO_CMD_BILL_ENABLE;
       ARDUINO_TASK[1] = 0xFF;
       ARDUINO_TASK[2] = 0xFF;
       ARDUINO_TASK[3] = 0xFF;
       ARDUINO_TASK[4] = 0xFF;
-    break;
+      break;
     case SEND_BILL_DISABLE:
       ARDUINO_TASK[0] = ARDUINO_CMD_BILL_ENABLE;
-    break;
+      break;
     case SEND_BILL_TO_STACKER:
       ARDUINO_TASK[0] = ARDUINO_CMD_BILL_ESCROW;
       ARDUINO_TASK[1] = 0x01;
-    break;
+      break;
     case SEND_BILL_REJECT:
       ARDUINO_TASK[0] = ARDUINO_CMD_BILL_ESCROW;
-    break;
+      break;
+    case SEND_BILL_AUDIT:
+      ARDUINO_TASK[0] = ARDUINO_CMD_BILL_AUDIT;
+      break;
+    case SEND_BILL_OUT:
+      ARDUINO_TASK[0] = ARDUINO_CMD_BILL_OUT;
+      ARDUINO_TASK[1] = 0x01;
+      ARDUINO_TASK[2] = 0x00;
+      ARDUINO_TASK[3] = 0x01;
+      break;
     case INVALID_OPTION:
     break;
   }
 
-  if( (selection >= SEND_ENQUIRY_BOARD) && (selection <= SEND_BILL_REJECT) )
+  if( (selection >= SEND_ENQUIRY_BOARD) && (selection < INVALID_OPTION) )
   {
     arduino_push_buffer(MATRIX_MESSAGE[selection], ARDUINO_TASK);
   }
@@ -455,7 +472,8 @@ uint8_t read_buffer_from_serial(void)
   if (Serial.available() > 0)
   {
     serial_option = Serial.read();
-    if( ( serial_option >= '1' ) && (serial_option <= '9') )
+    /* normal tasks */
+    if( ( serial_option >= '1' ) && (serial_option <= ';') )
     {
       serial_option -= '0';
       return serial_option - 1;
