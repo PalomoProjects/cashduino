@@ -138,11 +138,14 @@ void loop() {
       else if(coin_cmd == CASHDUINO_CMD_COIN_AUDIT)
       {
         /* print channel values, information available from 3 to 9 */
-        Serial.print(rx_cashduino[3]);Serial.print("($0.50 MXN)\n");
-        Serial.print(rx_cashduino[4]);Serial.print("($1 MXN)\n");
-        Serial.print(rx_cashduino[5]);Serial.print("($2 MXN)\n");
-        Serial.print(rx_cashduino[6]);Serial.print("($5 MXN)\n");
-        Serial.print(rx_cashduino[7]);Serial.print("($10 MXN)\n");
+        Serial.print(rx_cashduino[3]);Serial.print("\n");
+        Serial.print(rx_cashduino[4]);Serial.print("($0.50 MXN)\n");
+        Serial.print(rx_cashduino[5]);Serial.print("\n");
+        Serial.print(rx_cashduino[6]);Serial.print("($1 MXN)\n");
+        Serial.print(rx_cashduino[7]);Serial.print("($2 MXN)\n");
+        Serial.print(rx_cashduino[8]);Serial.print("($5 MXN)\n");
+        Serial.print(rx_cashduino[9]);Serial.print("($10 MXN)\n");
+        Serial.print(rx_cashduino[10]);Serial.print("\n");
       }
     }
   }
