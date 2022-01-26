@@ -25,9 +25,6 @@ uint8_t dos_peso   = 0;
 uint8_t cinco_peso = 0;
 uint8_t diez_peso  = 0;
 
-/*unsigned int CMD_BILL_AUDIT[]           = {0xB3, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33};*/
-/*unsigned int CMD_BILL_OUT[]             = {0xB4, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33};*/
-
 void setup() {
   // join i2c bus (address optional for master)
   Wire.begin();
@@ -35,32 +32,46 @@ void setup() {
   Serial.begin(9600);
 }
 
-void loop() {
- uint8_t MATRIX_CMD [][14] = {{0xC1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                             {0xA1, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                             {0xA1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                             {0xA2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                             {0xA3, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                             {0xB1, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                             {0xB1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                             {0xB2, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},
-                             {0xB2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33}
+/*
+#### CASHLESS EVENTS - AFTER ENABLE WAIT FOR USER TO INSERT (SWIPE) CARD
+<--- ARDUINO READ FROM CASHDUINO OVER I2C:
+CMD SUB  EVT  DAT3 DAT4 DAT5 DAT6 DAT7 DAT8 DAT9 DAT10 KEY1 KEY2 KEY3 KEY4 KEY5 <- 16 Bytes
+2B  00   00   00   00   00   00   00   00   00   00    33   CC   33   CC   33
+
+|DAT3 |   DESCRIPTION   |
+|*0x01|   CASH_SALE OK  |
+|0x03 |   BEGIN SESSION |
+|0x04 |   CANCELLED     |
+|0x05 |   VEND APPROVED |
+|0x06 |   VEND DENIED   |
+|0x07 |   END SESSION   |
+*/
+
+void loop() 
+{
+ uint8_t MATRIX_CMD [][14] = {
+                             {0xC1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},    /* COIN ENABLE */
+                             {0x1A, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},    /* CASHLESS ENABLE TASK */
+                             {0x1A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},    /* CASHLESS ENABLE TASK */
+                             {0x1B, 0x00, 0x64, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},    /* CASHLESS CHARGE AMOUNT */
+                             {0x1C, 0x01, 0x64, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},    /* CASHLESS VEND SUCCESS */
+                             {0x1D, 0x01, 0x64, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33},    /* CASHLESS CANCEL VEND */
+                             {0x1E, 0x01, 0x64, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x33, 0xCC, 0x33, 0xCC, 0x33}     /* CASHLESS CASH SALE */
                             };
+ 
  /* type in the send box section the selecction that you wants */
- char MATRIX_MESSAGE[][38] = {"ARDUINO SEND ENQUIRY BOARD > ",        /* option 1 */
-                              "ARDUINO SEND COIN ENABLE TASK > ",     /* option 2 */
-                              "ARDUINO SEND COIN DISABLE TASK > ",    /* option 3 */
-                              "ARDUINO SEND COIN AUDIT TASK > ",      /* option 4 */
-                              "ARDUINO SEND COIN OUT TASK > ",        /* option 5 */
-                              "ARDUINO SEND BILL ENABLE TASK > ",     /* option 6 */
-                              "ARDUINO SEND BILL DISABLE TASK > ",    /* option 7 */
-                              "ARDUINO SEND BILL TO STACKER TASK > ", /* option 8 */
-                              "ARDUINO SEND BILL REJECT TASK >"       /* option 9 */
+ char MATRIX_MESSAGE[][60] = {"ARDUINO SEND ENQUIRY BOARD > ",                    /* option 1 */
+                              "ARDUINO SEND CASHLESS ENABLE TASK > ",             /* option 2 */
+                              "ARDUINO SEND CASHLESS DISABLE TASK > ",            /* option 3 */
+                              "ARDUINO SEND CASHLESS VEND REQUEST TASK > ",       /* option 4 */
+                              "ARDUINO SEND CASHLESS VEND SUCCESS TASK > ",       /* option 5 */
+                              "ARDUINO SEND CASHLESS CANCEL VEND TASK > ",        /* option 6 */
+                              "ARDUINO SEND CASHLESS CASH SALE TASK > "           /* option 7 */
                              };
+                             
   uint8_t rx_cashduino[MAX_BUFF_CASHDUINO] = {0};
   uint8_t pc_option      = NONE;
-  uint8_t bill_cmd       = NONE;
-  uint8_t coin_cmd       = NONE;
+  uint8_t cashless_cmd   = NONE;
 
   /* lisent the serial port and sends task */
   if ( ( pc_option = read_buffer_from_serial() ) != NONE ){
@@ -74,27 +85,15 @@ void loop() {
   read_buffer_from_cashduino(rx_cashduino);
 
   /* is a new event? */
-  if ( looking_for_new_event(rx_cashduino) == true ){
+  if ( looking_for_new_event(rx_cashduino) == true )
+  {
     /* is a valid package? */
-    if( is_a_valid_package(rx_cashduino) == true ){
-
-      parsing_buffer_cashduino(rx_cashduino);
-      coin_cmd = parsing_buffer_coin_acceptor(rx_cashduino, &amount, &cent, &un_peso, &dos_peso, &cinco_peso, &diez_peso);
-      bill_cmd = parsing_buffer_bill_acceptor(rx_cashduino, &amount);
-
-      if ( ( coin_cmd == CASHDUINO_COIN_EVENT) || ( bill_cmd == CASHDUINO_BILL_EVENT) ){
-        Serial.print("Cash: $ " );
-        Serial.println(amount, 2);
-      }else if(coin_cmd == CASHDUINO_COIN_AUDIT){
-        Serial.print(cent);Serial.print("($0.50 MXN)\n");
-        Serial.print(un_peso);Serial.print("($1 MXN)\n");
-        Serial.print(dos_peso);Serial.print("($2 MXN)\n");
-        Serial.print(cinco_peso);Serial.print("($5 MXN)\n");
-        Serial.print(diez_peso);Serial.print("($10 MXN)\n");
-      }
+    if( is_a_valid_package(rx_cashduino) == true )
+    {
+      cashless_cmd = parsing_buffer_cashless(rx_cashduino, &amount);
     }
   }
-
+  
   delay(CASHDUINO_POLL_TIME);
 
 }
@@ -109,199 +108,48 @@ bool is_a_valid_package(uint8_t *rx_cashduino){
   return false;
 }
 
-/* function to know if the board is working */
-void parsing_buffer_cashduino(uint8_t *rx_cashduino){
+/* function to parsing the cashduino buffer and get information */
+uint8_t parsing_buffer_cashless(uint8_t *rx_cashduino, double *amount){
+
+  uint8_t ret_code = NONE;
   /* type of command */
-  switch(rx_cashduino[0]){
+  switch(rx_cashduino[0])
+  {
     case 0xD1:
-      /*Serial.print("CashDuino is a live :) \n" );//debug*/
+      Serial.print("CashDuino is a live :) \n" );//debug
       break;
-  }
-}
-
-/* function to parsing the cashduino buffer and get information */
-uint8_t parsing_buffer_coin_acceptor(uint8_t *rx_cashduino, double *amount,
-                                            uint8_t *channel0, uint8_t *channel1,
-                                            uint8_t *channel2, uint8_t *channel3,
-                                            uint8_t *channel4){
-
-  uint8_t ret_code = NONE;
-  /* type of command */
-  switch(rx_cashduino[0]){
-    case 0xF1:
-      /*Serial.print("Coin charger configured \n" ); //debug*/
-      break;
-    case CASHDUINO_COIN_AUDIT:
-      ret_code = CASHDUINO_COIN_AUDIT;
-      /*Serial.print("Event Counter: ");Serial.print(rx_cashduino[2]);Serial.print("\n");
-      Serial.print("Channel 1: ");Serial.print(rx_cashduino[3]);Serial.print("($0.50 MXN)\n");
-      Serial.print("Channel 2: ");Serial.print(rx_cashduino[4]);Serial.print("($1 MXN)\n");
-      Serial.print("Channel 3: ");Serial.print(rx_cashduino[5]);Serial.print("($2 MXN)\n");
-      Serial.print("Channel 4: ");Serial.print(rx_cashduino[6]);Serial.print("($5 MXN)\n");
-      Serial.print("Channel 5: ");Serial.print(rx_cashduino[7]);Serial.print("($10 MXN)\n");
-      Serial.print("Channel 6: ");Serial.print(rx_cashduino[8]);Serial.print("\n");
-      Serial.print("Channel 7: ");Serial.print(rx_cashduino[9]);Serial.print("\n");//debug*/
-      *(channel0) = rx_cashduino[3];
-      *(channel1) = rx_cashduino[4];
-      *(channel2) = rx_cashduino[5];
-      *(channel3) = rx_cashduino[6];
-      *(channel4) = rx_cashduino[7];
-      break;
-    case 0xF3:
-      /*Serial.print("Coin changer dispense coin \n" );*/
-      break;
-     case CASHDUINO_COIN_EVENT:
-      /*Serial.print("Event Counter: ");Serial.print(rx_cashduino[2]);Serial.print("\n"); //debug*/
-      if( (rx_cashduino[1] >= 0x40) && (rx_cashduino[1] <= 0x4F)){
-        ret_code = CASHDUINO_COIN_EVENT;
-        /*Serial.print("Coin in CashBox =) -> " ); //debug*/
-        switch (rx_cashduino[1]){
-          case 0x41:
-            /*Serial.print("($0.50 MXN) Inserted\n"); //debug*/
-            *(amount) += 0.5;
-            break;
-          case 0x42:
-            /*Serial.print("($1 MXN) Inserted\n"); //debug*/
-            *(amount) += 1;
-            break;
-          case 0x43:
-            /*Serial.print("($2 MXN) Inserted\n"); //debug*/
-            *(amount) += 2;
-            break;
-          case 0x44:
-            /*Serial.print("($5 MXN) Inserted\n"); //debug*/
-            *(amount) += 5;
-            break;
-          case 0x45:
-            /*Serial.print("($10 MXN) Inserted\n"); //debug*/
-            *(amount) += 10;
-            break;
-        }
+    case 0x2A:
+      //Serial.print("DATA: " ); Serial.print(rx_cashduino[3], HEX);Serial.print("\n");
+      if(rx_cashduino[3] == 0x01)
+      {
+        Serial.print("Cashless is enable, waiting for insert card ... :)\n" );//debug 
       }
-      if( (rx_cashduino[1] >= 0x50) && (rx_cashduino[1] <= 0x5F)){
-        ret_code = CASHDUINO_COIN_EVENT;
-        /*Serial.print("Coin in Tube =) -> " ); //debug*/
-        switch (rx_cashduino[1]){
-          case 0x51:
-            /*Serial.print("$0.50 MXN\n"); //debug*/
-            *(amount) += 0.5;
-            break;
-          case 0x52:
-            /*Serial.print("$1 MXN\n"); //debug*/
-            *(amount) += 1;
-            break;
-          case 0x53:
-            /*Serial.print("$2 MXN\n"); //debug*/
-            *(amount) += 2;
-            break;
-          case 0x54:
-            /*Serial.print("$5 MXN\n"); //debug*/
-            *(amount) += 5;
-            break;
-          case 0x55:
-            /*Serial.print("$10 MXN\n");//debug*/
-            *(amount) += 10;
-            break;
-          break;
-        }
-      }
-      if(rx_cashduino[1] == 0x01){
-        /*Serial.print("Push Reject =(\n" );*/
+      if(rx_cashduino[3] == 0x00)
+      {
+        Serial.print("Cashless is disable :)\n" );//debug 
       }
       break;
-  }
-  return ret_code;
-}
-
-/* function to parsing the cashduino buffer and get information */
-uint8_t parsing_buffer_bill_acceptor(uint8_t *rx_cashduino, double *amount){
-
-  uint8_t ret_code = NONE;
-  /* type of command */
-  switch(rx_cashduino[0]){
-    case 0xE1:
-      /*Serial.print("Bill acceptor configured :)\n" );//debug*/
-      break;
-    case 0xE2:
-      /*Serial.print("Bill Escrow\n" );//debug*/
-      break;
-    case 0xE3:
-      /*Serial.print("Bill Audit\n" );//debug*/
-      break;
-    case 0xE4:
-      /*Serial.print("Bill Out\n" );//debug*/
-      break;
-    case 0xE5:
-      /*Serial.print("Event Counter: ");Serial.print(rx_cashduino[2]);Serial.print("\n");*/
-      if( (rx_cashduino[1] >= 0x90) && (rx_cashduino[1] <= 0x9F)){
-        /*Serial.print("Bill in pre stacker =) -> " );*/
-        switch (rx_cashduino[1]){
-          case 0x90:
-            /*Serial.print("$20 MXN\n");//debug*/
-            break;
-          case 0x91:
-            /*Serial.print("$50 MXN\n");//debug*/
-            break;
-          case 0x92:
-            /*Serial.print("$100 MXN\n");//debug*/
-            break;
-          case 0x93:
-            /*Serial.print("$200 MXN\n");//debug*/
-            break;
-          case 0x94:
-            /*Serial.print("$500 MXN\n");//debug*/
-            break;
-          break;
-        }
-      }
-      if( (rx_cashduino[1] >= 0x80) && (rx_cashduino[1] <= 0x8F)){
-        ret_code = CASHDUINO_BILL_EVENT;
-        /*Serial.print("Bill in cashbox =) -> " );*/
-        switch (rx_cashduino[1]){
-          case 0x80:
-            /*Serial.print("$20 MXN\n");//debug*/
-            *(amount) += 20;
-            break;
-          case 0x81:
-            /*Serial.print("$50 MXN\n");//debug*/
-            *(amount) += 50;
-            break;
-          case 0x82:
-            /*Serial.print("$100 MXN\n");//debug*/
-            *(amount) += 100;
-            break;
-          case 0x83:
-            /*Serial.print("$200 MXN\n");//debug*/
-            *(amount) += 200;
-            break;
-          case 0x84:
-            /*Serial.print("$500 MXN\n");//debug*/
-            *(amount) += 500;
-            break;
-          break;
-        }
-      }
-      if( (rx_cashduino[1] >= 0xA0) && (rx_cashduino[1] <= 0xAF)){
-        /*Serial.print("Bill rejected =) -> " );*/
-        switch (rx_cashduino[1]){
-          case 0xA0:
-            /*Serial.print("$20 MXN\n");//debug*/
-            break;
-          case 0xA1:
-            /*Serial.print("$50 MXN\n");//debug*/
-            break;
-          case 0xA2:
-            /*Serial.print("$100 MXN\n");//debug*/
-            break;
-          case 0xA3:
-            /*Serial.print("$200 MXN\n");//debug*/
-            break;
-          case 0xA4:
-            /*Serial.print("$500 MXN\n");//debug*/
-            break;
-          break;
-        }
-      }
+    case 0x2B:
+       if(rx_cashduino[1] == 0x03)
+       {
+         Serial.print("CASHLESS BEGIN SESSION \n" );//debug
+       }
+       if(rx_cashduino[1] == 0x04)
+       {
+         Serial.print("CASHLESS CANCEL REQUEST \n" );//debug
+       }
+       if(rx_cashduino[1] == 0x05)
+       {
+         Serial.print("CASHLESS VEND APPROVED \n" );//debug
+       }
+       if(rx_cashduino[1] == 0x06)
+       {
+         Serial.print("CASHLESS VEND DENIED \n" );//debug
+       }
+       if(rx_cashduino[1] == 0x07)
+       {
+         Serial.print("CASHLESS SESSION END, THANK YOU! \n" );//debug
+       }
       break;
   }
   return ret_code;
