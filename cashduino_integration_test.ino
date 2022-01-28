@@ -6,24 +6,11 @@
 #define KEY_1                 0x33
 #define KEY_2                 0xCC
 #define NONE                  0xFF
-#define DISABLE_COIN_DEVICE   2
-#define DISABLE_BILL_DEVICE   6
 #define CASHDUINO_POLL_TIME   250
-
-#define CASHDUINO_COIN_AUDIT  0xF2
-#define CASHDUINO_COIN_EVENT  0xF4
-#define CASHDUINO_BILL_EVENT  0xE5
-
 
 uint8_t new_event  = 0xFF;
 uint8_t command    = 0x00;
-
 double  amount     = 0;
-uint8_t cent       = 0;
-uint8_t un_peso    = 0;
-uint8_t dos_peso   = 0;
-uint8_t cinco_peso = 0;
-uint8_t diez_peso  = 0;
 
 void setup() {
   // join i2c bus (address optional for master)
@@ -74,10 +61,8 @@ void loop()
   uint8_t cashless_cmd   = NONE;
 
   /* lisent the serial port and sends task */
-  if ( ( pc_option = read_buffer_from_serial() ) != NONE ){
-    if( (pc_option == DISABLE_COIN_DEVICE) || (pc_option == DISABLE_BILL_DEVICE) ) {
-      amount = 0;
-    }
+  if ( ( pc_option = read_buffer_from_serial() ) != NONE )
+  {
     send_task_to_cashduino(MATRIX_MESSAGE[pc_option], MATRIX_CMD[pc_option]);
   }
 
